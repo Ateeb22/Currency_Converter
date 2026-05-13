@@ -1,0 +1,85 @@
+<div class="converter-wrapper">
+  <div class="converter-card">
+    @if (loadingCurrencies()) {
+      <div class="spinner-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p class="loading-text">Loading currencies...</p>
+      </div>
+    } @else {
+      <div class="converter-form">
+        <div class="input-group">
+          <label class="field-label">Amount</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input matInput type="number" [ngModel]="amount()" (ngModelChange)="amount.set($event)" min="0.01" step="any" placeholder="Enter amount">
+          </mat-form-field>
+        </div>
+
+        <div class="currency-row">
+          <div class="currency-col">
+            <label class="field-label">From</label>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select [ngModel]="fromCurrency()" (ngModelChange)="fromCurrency.set($event)">
+                @for (c of currencies(); track c.code) {
+                  <mat-option [value]="c.code">{{ c.code }} - {{ c.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <button class="swap-btn" (click)="swap()" matTooltip="Swap currencies">
+            <mat-icon>swap_horiz</mat-icon>
+          </button>
+
+          <div class="currency-col">
+            <label class="field-label">To</label>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-select [ngModel]="toCurrency()" (ngModelChange)="toCurrency.set($event)">
+                @for (c of currencies(); track c.code) {
+                  <mat-option [value]="c.code">{{ c.code }} - {{ c.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="historical-row">
+          <mat-slide-toggle [ngModel]="historicalMode()" (ngModelChange)="historicalMode.set($event)" color="primary">
+            Use historical rate
+          </mat-slide-toggle>
+
+          @if (historicalMode()) {
+            <mat-form-field appearance="outline" class="date-field">
+              <mat-label>Pick a date</mat-label>
+              <input matInput [matDatepicker]="picker" [ngModel]="selectedDate()" (ngModelChange)="selectedDate.set($event)" [max]="maxDate">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          }
+        </div>
+
+        <button class="convert-btn" [disabled]="!canConvert() || loading()" (click)="convert()">
+          @if (loading()) {
+            <mat-spinner diameter="22" class="btn-spinner"></mat-spinner>
+          } @else {
+            <mat-icon class="btn-icon">sync_alt</mat-icon>
+            Convert
+          }
+        </button>
+      </div>
+
+      @if (result() !== null) {
+        <div class="result-box">
+          <div class="result-label">Conversion Result</div>
+          <div class="result-main">
+            <span class="result-from">{{ amount() | number:'1.2-2' }} {{ fromCurrency() }}</span>
+            <span class="result-eq">=</span>
+            <span class="result-to">{{ result() | number:'1.2-4' }} {{ toCurrency() }}</span>
+          </div>
+          <div class="result-rate">
+            1 {{ fromCurrency() }} = {{ rate() | number:'1.2-6' }} {{ toCurrency() }}
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

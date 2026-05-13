@@ -1,0 +1,51 @@
+<div class="history-wrapper">
+  <div class="history-card">
+    <div class="history-header">
+      <div class="history-title-row">
+        <mat-icon class="history-title-icon">history</mat-icon>
+        <h2 class="history-title">Conversion History</h2>
+      </div>
+      @if (historyService.records().length) {
+        <button class="clear-btn" (click)="historyService.clear()" matTooltip="Clear all">
+          <mat-icon>delete_outline</mat-icon>
+          Clear
+        </button>
+      }
+    </div>
+
+    @if (!historyService.records().length) {
+      <div class="empty-state">
+        <mat-icon class="empty-icon">receipt_long</mat-icon>
+        <p class="empty-text">No conversions yet</p>
+        <p class="empty-sub">Your conversion history will appear here</p>
+      </div>
+    } @else {
+      <div class="history-list">
+        @for (record of historyService.records(); track record.id) {
+          <div class="history-item" appHighlight="#f0fdfa">
+            <div class="item-left">
+              <div class="item-currencies">
+                <span class="item-code from-code">{{ record.from }}</span>
+                <mat-icon class="item-arrow">east</mat-icon>
+                <span class="item-code to-code">{{ record.to }}</span>
+              </div>
+              <div class="item-values">
+                {{ record.amount | number:'1.2-2' }} = {{ record.result | number:'1.2-4' }}
+              </div>
+              <div class="item-meta">
+                <span class="item-rate">Rate: {{ record.rate | number:'1.4-4' }}</span>
+                @if (record.isHistorical) {
+                  <span class="item-badge">{{ record.date }}</span>
+                }
+                <span class="item-time">{{ formatTime(record.timestamp) }}</span>
+              </div>
+            </div>
+            <button class="remove-btn" (click)="historyService.remove(record.id)" matTooltip="Remove">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

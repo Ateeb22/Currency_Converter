@@ -1,0 +1,32 @@
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+body {
+  color-scheme: light;
+  background: #f8fafc;
+  color: var(--mat-sys-on-surface);
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: #0e7490;
+  color: #fff;
+}
